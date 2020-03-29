@@ -37,15 +37,17 @@ const onLoad = () => {
     'width': '500',
     'height': '280',
     'fill': 'green',
+    'onclick': 'return selectPlayer(undefined)',
   });
 
   // field decorations
-  // addChildSvgElement(svgElt, 'line', {
-  //   'x1': '0',
-  //   'x2': '600',
-  //   'y1': '150',
-  //   'y2': '150',
-  // });
+  addChildSvgElement(svgElt, 'line', {
+    'x1': '50',
+    'x2': '550',
+    'y1': '150',
+    'y2': '150',
+    'stroke-dasharray': '10 5',
+  });
   addChildSvgElement(svgElt, 'line', {
     'x1': '300',
     'x2': '300',
@@ -59,23 +61,17 @@ const onLoad = () => {
     'fill': 'none',
   });
 
+  addRedPlayer(svgElt, 100, 90);
+  addRedPlayer(svgElt, 200, 90);
+  addRedPlayer(svgElt, 100, 190);
+  addRedPlayer(svgElt, 200, 190);
 
-  // html += '<circle cx="50" cy="50" r="10"  fill="yellow" />';
+  addWhitePlayer(svgElt, 400, 105);
+  addWhitePlayer(svgElt, 500, 105);
+  addWhitePlayer(svgElt, 400, 205);
+  addWhitePlayer(svgElt, 500, 205);
 
-  // const soccer2Elt = document.querySelector('#soccer2');
-  //
-  // let html = '';
-  // html += 'Soccer';
-  // html += '<br>';
-  // html += '<svg width="600" height="300" stroke="black" stroke-width="4" style="background-color:gray">';
-  // html += '<rect y="12" x="10" width="100" height="100" fill="green"/>';
-  // html += '<circle cx="50" cy="50" r="10"  fill="yellow" />';
-  // html += '<g transform="translate(10,10)">';
-  // html += '<polygon points="15,5 25,20 5,20 15,5" fill="red" />';
-  // html += '</g>';
-  // html += '</svg>';
-  //
-  // soccer2Elt.innerHTML = html;
+  addBall(svgElt, 300, 150);
 };
 
 const addRedPlayer = (svgElt, x, y) => {
@@ -85,9 +81,39 @@ const addRedPlayer = (svgElt, x, y) => {
   addChildSvgElement(gElt, 'polygon', {
     'points': '15,5 25,20 5,20 15,5',
     'fill': 'red',
+    'class': 'player unselected_player',
+    'onclick': 'return selectPlayer(this)',
   });
+};
 
-  // html += '<g transform="translate(10,10)">';
-  // html += '<polygon points="15,5 25,20 5,20 15,5" fill="red" />';
-  // html += '</g>';
+const addWhitePlayer = (svgElt, x, y) => {
+  addChildSvgElement(svgElt, 'circle', {
+    'cx': `${x}`,
+    'cy': `${y}`,
+    'r': '10',
+    'fill': 'white',
+    'class': 'player unselected_player',
+    'onclick': 'return selectPlayer(this)',
+  });
+};
+
+const addBall = (svgElt, x, y) => {
+  addChildSvgElement(svgElt, 'circle', {
+    'cx': `${x}`,
+    'cy': `${y}`,
+    'r': '10',
+    'fill': 'gray',
+    'class': 'ball',
+  });
+};
+
+const selectPlayer = (elt) => {
+  const playerElts = [...document.getElementsByClassName('player')];
+  playerElts.forEach((playerElt) => {
+    playerElt.className.baseVal = 'player unselected_player';
+  });
+  if (elt) {
+    elt.className.baseVal = 'player selected_player';
+  }
+  return false;
 };

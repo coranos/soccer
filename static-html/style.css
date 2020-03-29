@@ -45,7 +45,6 @@ hr {}
   display: inline;
 }
 
-
 .display_inline_block {
   display: inline-block;
 }
@@ -112,4 +111,28 @@ hr {}
   border-radius: 4px;
   border: solid;
   border-width: 1px;
+}
+
+.unselected_player {
+  stroke: #000;
+}
+
+.unselected_player:hover {
+  stroke: gray;
+}
+
+.unselected_player:active {
+  stroke: white;
+}
+
+.selected_player {
+  stroke: #FF0;
+}
+
+.selected_player:hover {
+  stroke: #AA0;
+}
+
+.selected_player:active {
+  stroke: #FF7;
 }
