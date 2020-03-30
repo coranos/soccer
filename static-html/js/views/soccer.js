@@ -61,39 +61,48 @@ const onLoad = () => {
     'fill': 'none',
   });
 
-  addRedPlayer(svgElt, 100, 90);
-  addRedPlayer(svgElt, 200, 90);
-  addRedPlayer(svgElt, 100, 190);
-  addRedPlayer(svgElt, 200, 190);
+  addRedPlayer(svgElt, 100, 100);
+  addRedPlayer(svgElt, 200, 100);
+  addRedPlayer(svgElt, 100, 200);
+  addRedPlayer(svgElt, 200, 200);
+  addRedPlayer(svgElt, 50, 150);
 
-  addWhitePlayer(svgElt, 400, 105);
-  addWhitePlayer(svgElt, 500, 105);
-  addWhitePlayer(svgElt, 400, 205);
-  addWhitePlayer(svgElt, 500, 205);
+  addWhitePlayer(svgElt, 400, 100);
+  addWhitePlayer(svgElt, 500, 100);
+  addWhitePlayer(svgElt, 400, 200);
+  addWhitePlayer(svgElt, 500, 200);
+  addWhitePlayer(svgElt, 550, 150);
 
   addBall(svgElt, 300, 150);
 };
 
 const addRedPlayer = (svgElt, x, y) => {
+  const x0 = x-12.5;
+  const y0 = y-12.5;
   const gElt = addChildSvgElement(svgElt, 'g', {
-    'transform': `translate(${x},${y})`,
-  });
-  addChildSvgElement(gElt, 'polygon', {
-    'points': '15,5 25,20 5,20 15,5',
-    'fill': 'red',
+    'data_x': x0,
+    'data_y': y0,
+    'transform': `translate(${x0},${y0})`,
     'class': 'player unselected_player',
     'onclick': 'return selectPlayer(this)',
+    'fill': 'red',
+  });
+  addChildSvgElement(gElt, 'polygon', {
+    'points': '12.5,5 20,20 5,20 12.5,5',
   });
 };
 
 const addWhitePlayer = (svgElt, x, y) => {
-  addChildSvgElement(svgElt, 'circle', {
-    'cx': `${x}`,
-    'cy': `${y}`,
-    'r': '10',
-    'fill': 'white',
+  const gElt = addChildSvgElement(svgElt, 'g', {
+    'data_x': x,
+    'data_y': y,
+    'transform': `translate(${x},${y})`,
     'class': 'player unselected_player',
     'onclick': 'return selectPlayer(this)',
+    'fill': 'white',
+  });
+  addChildSvgElement(gElt, 'circle', {
+    'r': '10',
   });
 };
 
@@ -105,6 +114,43 @@ const addBall = (svgElt, x, y) => {
     'fill': 'gray',
     'class': 'ball',
   });
+};
+
+const move = (elt, dx, dy) => {
+  // console.log('STARTED move', elt, dx, dy);
+  const dataX = get(elt, 'data_x');
+  const dataY = get(elt, 'data_y');
+  const x = parseFloat(dataX) + dx;
+  const y = parseFloat(dataY) + dy;
+  // console.log('INTERIM move', dataX, dataY, dx, dy, x, y);
+  set(elt, 'transform', `translate(${x},${y})`);
+  set(elt, 'data_x', x);
+  set(elt, 'data_y', y);
+  // console.log('SUCCESS move', elt);
+};
+
+const moveLeft = () => {
+  // console.log('moveLeft');
+  const selectedPlayerElt = document.querySelector('.selected_player');
+  if (selectedPlayerElt) {
+    displayErrorMessage();
+    move(selectedPlayerElt, -10, 0);
+  } else {
+    displayErrorMessage('Select a Player');
+  }
+  return false;
+};
+
+const moveRight = () => {
+  // console.log('moveRight');
+  const selectedPlayerElt = document.querySelector('.selected_player');
+  if (selectedPlayerElt) {
+    displayErrorMessage();
+    move(selectedPlayerElt, +10, 0);
+  } else {
+    displayErrorMessage('Select a Player');
+  }
+  return false;
 };
 
 const selectPlayer = (elt) => {

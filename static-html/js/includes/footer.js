@@ -15,11 +15,19 @@ const addChildSvgElement = (parent, childType, attributes) => {
   return child;
 };
 
+const get = (elt, name) => {
+  return elt.getAttribute(name);
+};
+
+const set = (elt, name, value) => {
+  elt.setAttribute(name, value);
+};
+
 const addAttributes = (child, attributes) => {
   if (attributes) {
     Object.keys(attributes).forEach((attibute) => {
       const value = attributes[attibute];
-      child.setAttribute(attibute, value);
+      set(child, attibute, value);
     });
   }
 };
@@ -30,4 +38,13 @@ const addChildElement = (parent, childType, attributes) => {
   parent.appendChild(child);
   addAttributes(child, attributes);
   return child;
+};
+
+const displayErrorMessage = (message) => {
+  const errorMessageElt = document.querySelector('#errorMessage');
+  if ((message == undefined) || (message.length == 0)) {
+    errorMessageElt.innerText = '';
+  } else {
+    errorMessageElt.innerText = message;
+  }
 };
