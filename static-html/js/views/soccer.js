@@ -150,6 +150,30 @@ const move = (elt, dx, dy) => {
   // console.log('SUCCESS move', elt);
 };
 
+const moveUp = () => {
+  // console.log('moveUp');
+  const selectedPlayerElt = document.querySelector('.selected_player');
+  if (selectedPlayerElt) {
+    displayErrorMessage();
+    move(selectedPlayerElt, 0, -10);
+  } else {
+    displayErrorMessage('Select a Player');
+  }
+  return false;
+};
+
+const moveDown = () => {
+  // console.log('moveUp');
+  const selectedPlayerElt = document.querySelector('.selected_player');
+  if (selectedPlayerElt) {
+    displayErrorMessage();
+    move(selectedPlayerElt, 0, +10);
+  } else {
+    displayErrorMessage('Select a Player');
+  }
+  return false;
+};
+
 const moveLeft = () => {
   // console.log('moveLeft');
   const selectedPlayerElt = document.querySelector('.selected_player');
