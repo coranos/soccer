@@ -9,29 +9,31 @@ const onLoad = () => {
     'height': '300',
     'stroke': 'black',
     'stroke-width': '4',
-    'style': 'background-color:gray',
+    'style': 'background-color:darkgray',
   });
 
-  // left goal
-  addChildSvgElement(svgElt, 'rect', {
+  // red goal
+  const redGoalieRect = addChildSvgElement(svgElt, 'rect', {
     'y': '100',
     'x': '10',
     'width': '40',
     'height': '100',
     'fill': 'green',
+    'stroke': 'pink',
   });
 
-  // right goal
-  addChildSvgElement(svgElt, 'rect', {
+  // white goal
+  const whiteGoalieRect = addChildSvgElement(svgElt, 'rect', {
     'y': '100',
     'x': '550',
     'width': '40',
     'height': '100',
     'fill': 'green',
+    'stroke': 'gray',
   });
 
   // field
-  addChildSvgElement(svgElt, 'rect', {
+  const playerRect = addChildSvgElement(svgElt, 'rect', {
     'y': '10',
     'x': '50',
     'width': '500',
@@ -61,27 +63,30 @@ const onLoad = () => {
     'fill': 'none',
   });
 
-  addRedPlayer(svgElt, 100, 100);
-  addRedPlayer(svgElt, 200, 100);
-  addRedPlayer(svgElt, 100, 200);
-  addRedPlayer(svgElt, 200, 200);
-  addRedPlayer(svgElt, 50, 150);
+  addRedPlayer(svgElt, 100, 100, playerRect);
+  addRedPlayer(svgElt, 200, 100, playerRect);
+  addRedPlayer(svgElt, 100, 200, playerRect);
+  addRedPlayer(svgElt, 200, 200, playerRect);
+  addRedPlayer(svgElt, 50, 150, redGoalieRect);
 
-  addWhitePlayer(svgElt, 400, 100);
-  addWhitePlayer(svgElt, 500, 100);
-  addWhitePlayer(svgElt, 400, 200);
-  addWhitePlayer(svgElt, 500, 200);
-  addWhitePlayer(svgElt, 550, 150);
+  addWhitePlayer(svgElt, 400, 100, playerRect);
+  addWhitePlayer(svgElt, 500, 100, playerRect);
+  addWhitePlayer(svgElt, 400, 200, playerRect);
+  addWhitePlayer(svgElt, 500, 200, playerRect);
+  addWhitePlayer(svgElt, 550, 150, whiteGoalieRect);
 
   addBall(svgElt, 300, 150);
 };
 
-const addRedPlayer = (svgElt, x, y) => {
-  const x0 = x-12.5;
-  const y0 = y-12.5;
+const addRedPlayer = (svgElt, x, y, boundaryElt) => {
+  const dx = -12.5;
+  const dy = -12.5;
+  const x0 = x+dx;
+  const y0 = y+dy;
   const gElt = addChildSvgElement(svgElt, 'g', {
     'data_x': x0,
     'data_y': y0,
+    'boundary': getBoundaryStr(boundaryElt, dx, dy),
     'transform': `translate(${x0},${y0})`,
     'class': 'player unselected_player',
     'onclick': 'return selectPlayer(this)',
@@ -92,10 +97,11 @@ const addRedPlayer = (svgElt, x, y) => {
   });
 };
 
-const addWhitePlayer = (svgElt, x, y) => {
+const addWhitePlayer = (svgElt, x, y, boundaryElt) => {
   const gElt = addChildSvgElement(svgElt, 'g', {
     'data_x': x,
     'data_y': y,
+    'boundary': getBoundaryStr(boundaryElt, 0, 0),
     'transform': `translate(${x},${y})`,
     'class': 'player unselected_player',
     'onclick': 'return selectPlayer(this)',
@@ -118,10 +124,25 @@ const addBall = (svgElt, x, y) => {
 
 const move = (elt, dx, dy) => {
   // console.log('STARTED move', elt, dx, dy);
+  const boundary = JSON.parse(get(elt, 'boundary'));
   const dataX = get(elt, 'data_x');
   const dataY = get(elt, 'data_y');
-  const x = parseFloat(dataX) + dx;
-  const y = parseFloat(dataY) + dy;
+  let x = parseFloat(dataX) + dx;
+  let y = parseFloat(dataY) + dy;
+  // console.log('INTERIM move STARTED boundary', boundary, x, y);
+  if (x < boundary.x) {
+    x = boundary.x;
+  }
+  if (x > boundary.x + boundary.width) {
+    x = boundary.x + boundary.width;
+  }
+  if (y < boundary.y) {
+    y = boundary.y;
+  }
+  if (y > boundary.y + boundary.height) {
+    y = boundary.y + boundary.height;
+  }
+  // console.log('INTERIM move SUCCESS boundary', boundary, x, y);
   // console.log('INTERIM move', dataX, dataY, dx, dy, x, y);
   set(elt, 'transform', `translate(${x},${y})`);
   set(elt, 'data_x', x);
@@ -162,4 +183,17 @@ const selectPlayer = (elt) => {
     elt.className.baseVal = 'player selected_player';
   }
   return false;
+};
+
+const getBoundaryStr = (elt, dx, dy) => {
+  return JSON.stringify(getBoundary(elt, dx, dy));
+};
+
+const getBoundary = (elt, dx, dy) => {
+  return {
+    'x': parseFloat(get(elt, 'x')) + dx,
+    'y': parseFloat(get(elt, 'y')) + dy,
+    'width': parseFloat(get(elt, 'width')),
+    'height': parseFloat(get(elt, 'height')),
+  };
 };
