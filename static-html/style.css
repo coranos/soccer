@@ -21,6 +21,11 @@ ol {}
 
 hr {}
 
+button {
+  width: 100px;
+  height: 100px;
+}
+
 .t_left {
   text-align: left;
 }
