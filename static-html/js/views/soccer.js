@@ -8,7 +8,7 @@ const onLoad = () => {
     'width': '600',
     'height': '300',
     'stroke': 'black',
-    'stroke-width': '4',
+    'stroke-width': '2',
     'style': 'background-color:darkgray',
   });
 
@@ -76,6 +76,8 @@ const onLoad = () => {
   addWhitePlayer(svgElt, 550, 150, whiteGoalieRect);
 
   addBall(svgElt, 300, 150);
+
+  setInterval(moveBall, 100);
 };
 
 const addRedPlayer = (svgElt, x, y, boundaryElt) => {
@@ -86,14 +88,21 @@ const addRedPlayer = (svgElt, x, y, boundaryElt) => {
   const gElt = addChildSvgElement(svgElt, 'g', {
     'data_x': x0,
     'data_y': y0,
+    'data_r': '10',
     'boundary': getBoundaryStr(boundaryElt, dx, dy),
     'transform': `translate(${x0},${y0})`,
     'class': 'player unselected_player',
     'onclick': 'return selectPlayer(this)',
     'fill': 'red',
   });
+  addChildSvgElement(gElt, 'circle', {
+    'cx': '12.5',
+    'cy': '12.5',
+    'r': '10',
+    'fill': 'none',
+  });
   addChildSvgElement(gElt, 'polygon', {
-    'points': '12.5,5 20,20 5,20 12.5,5',
+    'points': '12.5,4 19.5,18.5 5,18.5 12.5,4',
   });
 };
 
@@ -101,6 +110,7 @@ const addWhitePlayer = (svgElt, x, y, boundaryElt) => {
   const gElt = addChildSvgElement(svgElt, 'g', {
     'data_x': x,
     'data_y': y,
+    'data_r': '10',
     'boundary': getBoundaryStr(boundaryElt, 0, 0),
     'transform': `translate(${x},${y})`,
     'class': 'player unselected_player',
@@ -147,6 +157,7 @@ const move = (elt, dx, dy) => {
   set(elt, 'transform', `translate(${x},${y})`);
   set(elt, 'data_x', x);
   set(elt, 'data_y', y);
+  playerKickBall();
   // console.log('SUCCESS move', elt);
 };
 
@@ -220,4 +231,80 @@ const getBoundary = (elt, dx, dy) => {
     'width': parseFloat(get(elt, 'width')),
     'height': parseFloat(get(elt, 'height')),
   };
+};
+
+const playerKickBall = () => {
+  const selectedPlayerElt = document.querySelector('.selected_player');
+  if (!selectedPlayerElt) {
+    return;
+  }
+  const ballElt = document.querySelector('.ball');
+  if (!ballElt) {
+    return;
+  }
+  const playerX = parseFloat(get(selectedPlayerElt, 'data_x'));
+  const playerY = parseFloat(get(selectedPlayerElt, 'data_y'));
+  const playerR = parseFloat(get(selectedPlayerElt, 'data_r'));
+  const ballX = parseFloat(get(ballElt, 'cx'));
+  const ballY = parseFloat(get(ballElt, 'cy'));
+  const ballR = parseFloat(get(ballElt, 'r'));
+
+  const dx = Math.abs(playerX-ballX);
+  const dy = Math.abs(playerY-ballY);
+  const min = (playerR + ballR) * 1.5;
+  // console.log('playerKickBall', dx, minDx, playerR, ballR );
+  if ((dx < min) && (dy < min)) {
+    if (dx < min) {
+      if (playerX < ballX - 10) {
+        set(ballElt, 'move_dx', 20);
+      }
+      if (playerX > ballX + 10) {
+        set(ballElt, 'move_dx', -20);
+      }
+    }
+    if (dy < min) {
+      if (playerY < ballY - 10) {
+        set(ballElt, 'move_dy', 20);
+      }
+      if (playerY > ballY + 10) {
+        set(ballElt, 'move_dy', -20);
+      }
+    }
+  }
+};
+
+const moveBall = () => {
+  const ballElt = document.querySelector('.ball');
+  if (!ballElt) {
+    return;
+  }
+  const ballDX = parseFloat(get(ballElt, 'move_dx'));
+  // console.log('moveBall', ballDX);
+  if (ballDX > 1) {
+    const ballX = parseFloat(get(ballElt, 'cx'));
+    // console.log('moveBall', ballX, ballElt);
+    set(ballElt, 'cx', ballX+1);
+    set(ballElt, 'move_dx', ballDX-1);
+  } else if (ballDX < -1) {
+    const ballX = parseFloat(get(ballElt, 'cx'));
+    // console.log('moveBall', ballX, ballElt);
+    set(ballElt, 'cx', ballX-1);
+    set(ballElt, 'move_dx', ballDX+1);
+  } else {
+    set(ballElt, 'move_dx', 0);
+  }
+  const ballDY = parseFloat(get(ballElt, 'move_dy'));
+  if (ballDY > 1) {
+    const ballY = parseFloat(get(ballElt, 'cy'));
+    // console.log('moveBall', ballX, ballElt);
+    set(ballElt, 'cy', ballY+1);
+    set(ballElt, 'move_dy', ballDY-1);
+  } else if (ballDY < -1) {
+    const ballY = parseFloat(get(ballElt, 'cy'));
+    // console.log('moveBall', ballX, ballElt);
+    set(ballElt, 'cy', ballY-1);
+    set(ballElt, 'move_dy', ballDY+1);
+  } else {
+    set(ballElt, 'move_dy', 0);
+  }
 };
