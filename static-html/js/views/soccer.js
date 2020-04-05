@@ -132,7 +132,7 @@ const addBall = (svgElt, x, y) => {
   });
 };
 
-const move = (elt, dx, dy) => {
+const move = (elt, dx, dy, type) => {
   // console.log('STARTED move', elt, dx, dy);
   const boundary = JSON.parse(get(elt, 'boundary'));
   const dataX = get(elt, 'data_x');
@@ -157,7 +157,7 @@ const move = (elt, dx, dy) => {
   set(elt, 'transform', `translate(${x},${y})`);
   set(elt, 'data_x', x);
   set(elt, 'data_y', y);
-  playerKickBall();
+  playerKickBall(type);
   // console.log('SUCCESS move', elt);
 };
 
@@ -166,7 +166,7 @@ const moveUp = (type) => {
   const selectedPlayerElt = document.querySelector('.selected_player.' + type);
   if (selectedPlayerElt) {
     displayErrorMessage();
-    move(selectedPlayerElt, 0, -10);
+    move(selectedPlayerElt, 0, -10, type);
   } else {
     displayErrorMessage('Select a Player');
   }
@@ -178,7 +178,7 @@ const moveDown = (type) => {
   const selectedPlayerElt = document.querySelector('.selected_player.' + type);
   if (selectedPlayerElt) {
     displayErrorMessage();
-    move(selectedPlayerElt, 0, +10);
+    move(selectedPlayerElt, 0, +10, type);
   } else {
     displayErrorMessage('Select a Player');
   }
@@ -190,7 +190,7 @@ const moveLeft = (type) => {
   const selectedPlayerElt = document.querySelector('.selected_player.' + type);
   if (selectedPlayerElt) {
     displayErrorMessage();
-    move(selectedPlayerElt, -10, 0);
+    move(selectedPlayerElt, -10, 0, type);
   } else {
     displayErrorMessage('Select a Player');
   }
@@ -202,7 +202,7 @@ const moveRight = (type) => {
   const selectedPlayerElt = document.querySelector('.selected_player.' + type);
   if (selectedPlayerElt) {
     displayErrorMessage();
-    move(selectedPlayerElt, +10, 0);
+    move(selectedPlayerElt, +10, 0, type);
   } else {
     displayErrorMessage('Select a Player');
   }
@@ -233,8 +233,8 @@ const getBoundary = (elt, dx, dy) => {
   };
 };
 
-const playerKickBall = () => {
-  const selectedPlayerElt = document.querySelector('.selected_player');
+const playerKickBall = (type) => {
+  const selectedPlayerElt = document.querySelector('.selected_player.' + type);
   if (!selectedPlayerElt) {
     return;
   }
