@@ -39,7 +39,7 @@ const onLoad = () => {
     'width': '500',
     'height': '280',
     'fill': 'green',
-    'onclick': 'return selectPlayer(undefined)',
+    'onclick': 'return selectPlayer(undefined,\'\')',
   });
 
   // field decorations
@@ -91,8 +91,8 @@ const addRedPlayer = (svgElt, x, y, boundaryElt) => {
     'data_r': '10',
     'boundary': getBoundaryStr(boundaryElt, dx, dy),
     'transform': `translate(${x0},${y0})`,
-    'class': 'player unselected_player',
-    'onclick': 'return selectPlayer(this)',
+    'class': 'player unselected_player red',
+    'onclick': 'return selectPlayer(this,\'red\')',
     'fill': 'red',
   });
   addChildSvgElement(gElt, 'circle', {
@@ -113,8 +113,8 @@ const addWhitePlayer = (svgElt, x, y, boundaryElt) => {
     'data_r': '10',
     'boundary': getBoundaryStr(boundaryElt, 0, 0),
     'transform': `translate(${x},${y})`,
-    'class': 'player unselected_player',
-    'onclick': 'return selectPlayer(this)',
+    'class': 'player unselected_player white',
+    'onclick': 'return selectPlayer(this,\'white\')',
     'fill': 'white',
   });
   addChildSvgElement(gElt, 'circle', {
@@ -161,9 +161,9 @@ const move = (elt, dx, dy) => {
   // console.log('SUCCESS move', elt);
 };
 
-const moveUp = () => {
+const moveUp = (type) => {
   // console.log('moveUp');
-  const selectedPlayerElt = document.querySelector('.selected_player');
+  const selectedPlayerElt = document.querySelector('.selected_player.' + type);
   if (selectedPlayerElt) {
     displayErrorMessage();
     move(selectedPlayerElt, 0, -10);
@@ -173,9 +173,9 @@ const moveUp = () => {
   return false;
 };
 
-const moveDown = () => {
+const moveDown = (type) => {
   // console.log('moveUp');
-  const selectedPlayerElt = document.querySelector('.selected_player');
+  const selectedPlayerElt = document.querySelector('.selected_player.' + type);
   if (selectedPlayerElt) {
     displayErrorMessage();
     move(selectedPlayerElt, 0, +10);
@@ -185,9 +185,9 @@ const moveDown = () => {
   return false;
 };
 
-const moveLeft = () => {
+const moveLeft = (type) => {
   // console.log('moveLeft');
-  const selectedPlayerElt = document.querySelector('.selected_player');
+  const selectedPlayerElt = document.querySelector('.selected_player.' + type);
   if (selectedPlayerElt) {
     displayErrorMessage();
     move(selectedPlayerElt, -10, 0);
@@ -197,9 +197,9 @@ const moveLeft = () => {
   return false;
 };
 
-const moveRight = () => {
+const moveRight = (type) => {
   // console.log('moveRight');
-  const selectedPlayerElt = document.querySelector('.selected_player');
+  const selectedPlayerElt = document.querySelector('.selected_player.' + type);
   if (selectedPlayerElt) {
     displayErrorMessage();
     move(selectedPlayerElt, +10, 0);
@@ -209,13 +209,13 @@ const moveRight = () => {
   return false;
 };
 
-const selectPlayer = (elt) => {
-  const playerElts = [...document.getElementsByClassName('player')];
+const selectPlayer = (elt, type) => {
+  const playerElts = [...document.getElementsByClassName('player ' + type)];
   playerElts.forEach((playerElt) => {
-    playerElt.className.baseVal = 'player unselected_player';
+    playerElt.className.baseVal = 'player unselected_player ' + type;
   });
   if (elt) {
-    elt.className.baseVal = 'player selected_player';
+    elt.className.baseVal = 'player selected_player ' + type;
   }
   return false;
 };
