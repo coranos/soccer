@@ -39,7 +39,7 @@ const onLoad = () => {
     'width': '500',
     'height': '280',
     'fill': 'green',
-    'onclick': 'return selectPlayer(undefined,\'\')',
+    // 'onclick': 'return selectPlayer(undefined,\'\')',
   });
 
   // field decorations
