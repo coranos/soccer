@@ -19,3 +19,7 @@
 #todo
 
   add goal keeping and scoring.
+
+  add multiplayer, where you can have both red and white controls.
+
+    
