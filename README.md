@@ -15,3 +15,7 @@
 ### to stop and restart, use the command:
 
   npm run screenrestart;
+
+#todo
+
+  add goal keeping and scoring.
